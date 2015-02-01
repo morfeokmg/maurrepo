@@ -1,0 +1,14 @@
+src/Examples/#ListenerClient.py#
+*.pyc
+*.bkp20141124
+*.py~
+*.out
+src/thumb.jpg
+src/whatsapp_config.txt
+src/sirpoot/CmdClient.py
+src/sirpoot/connectionmanager.py
+src/sirpoot/GetAllGroupsClient.py
+src/sirpoot/GroupInfoClient.py
+src/sirpoot/GroupListenerClient.py
+src/sirpoot/UploaderClient.py
+src/sirpoot/yowsup-cli
