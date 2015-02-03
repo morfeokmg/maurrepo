@@ -2,6 +2,7 @@
 
 '''
 Copyright (c) <2012> Tarek Galal <tare2.galal@gmail.com>
+Modified <2015>  Mauricio Martinez <morfeokmg@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this 
 software and associated documentation files (the "Software"), to deal in the Software 
@@ -65,13 +66,52 @@ Do not change this field after registering using Yowsup
 
 You can specify those variables using -c argument, as a path to a file containing this configuration.
 
+#########
+This config file have the next new parameters.
+ 
+These new parameter are for the local commands execution, we implement new levels of security in accord each level base in the XML message.
+	<message participant="5215555000000@s.whatsapp.net" t="1416524425" from="5215555000000-123467890@g.us" offline="0" type="text" id="0987654321-1" notify="Un usuario mas">
+    	<body></body>
+	</message>	 
+
+
+	admingroup: Your group on whatsapp with privileges for execution for all commands and binaries configured, \ 
+this is group for send and receive all messages too.
+The admin group is formed by the jid + group id. (this is [PHONE_ADMIN-GROUP_ID]@[some_domain] from part)
+	
+	
+	adminusers: Your users on whatsapp with privileges for execution for all commands and binaries configured.
+The admin users are the jid of the participant part. (this is [PHONE_ADMIN]@[some_domain])
+	
+	operatorusers: Your users on whatsapp with privileges for execution for some commands configured. By example, \ 
+restart some process, stop some application process, but these cannot execute binaries of the operating system.
+The operator users are the jid of the participant part. (this is [PHONE_OPERATOR]@[some_domain])
+   
+	clientusers: Your users on whatsapp with privileges for execution only of restricted commands. By example, \ 
+getAllInformation of the prepaid client, etc.
+The client users are the jid of the participant part. (this is [PHONE_CLIENTS]@[some_domain])
+
+	nobodyusers: Your users on whatsapp without privileges for execution of commands, \ 
+these users can be send or receive messages on the group, but cannot execute not one command. This is the default \
+group for all users  that not exist on the last groups.
+  
+  
+  
+#########
 Config file Example:
 
 ##/home/user/my_whatsapp_config.txt#
 phone=201111111111
 id=FF:FF:FF:FF:FF:FF
 password=S1nBGCvZhb6TBQrbm2sQCfSLkXM=
+admingroup=5215555555555-123456789
+adminusers=5215555555555
+operatorusers=5215555555552
+clientusers=5215555555553
+nobodyusers=
+
 #########
+
 
 Usage Example for listening to incoming messages:
 
@@ -114,6 +154,11 @@ def getCredentials(config = DEFAULT_CONFIG):
 		idx = ""
 		pw = ""
 		cc = ""
+		admingp = ""
+		adminusr = ""
+		operatorusr = ""
+		clientusr = ""
+		nobodyusr = ""
 		
 		try:
 			for l in f:
@@ -133,8 +178,20 @@ def getCredentials(config = DEFAULT_CONFIG):
 						pw =val
 					elif varname == "cc":
 						cc = val
+					elif varname == "admingroup":
+						admingp = val						
+					elif varname == "adminusers":
+						adminusr = val
+					elif varname == "operatorusers":
+						operatorusr = val
+					elif varname == "clientusers":
+						clientusr = val
+					elif varname == "nobodyusers":
+						nobodyusr = val
 
-			return (cc, phone, idx, pw);
+			#return (cc, phone, idx, pw);
+			return (cc, phone, idx, pw, admingp, adminusr, operatorusr, clientusr, nobodyusr)
+		
 		except:
 			pass
 
@@ -233,7 +290,8 @@ def mainProcess(argumentsPro):
 		credentials = getCredentials(args["config"] or DEFAULT_CONFIG)
 		
 		if credentials:
-	
+
+			#cc, phone, idx, pw, admingp, adminusr, operatorusr, clientusr, nobodyusr	
 			countryCode, login, identity, password = credentials
 	
 			identity = Utilities.processIdentity(identity)
